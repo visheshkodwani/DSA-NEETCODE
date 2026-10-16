@@ -1,0 +1,13 @@
+---
+layout: default
+---
+<header class="page-hero problem-hero">
+  <p class="eyebrow">{{ page.parent }}{% if page.nav_order %} &middot; #{{ page.nav_order }}{% endif %}</p>
+  <h1 class="hero-heading">{{ page.title }}</h1>
+  <div class="chips">
+    {% include chips.html page=page %}
+    {%- if page.link -%}<a class="chip chip-link" href="{{ page.link }}" target="_blank" rel="noopener">Solve it &#8599;</a>{%- endif -%}
+  </div>
+</header>
+
+{{ content }}

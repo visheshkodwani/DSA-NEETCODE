@@ -1,0 +1,4 @@
+{%- assign p = include.page -%}
+{%- if p.difficulty -%}<span class="chip chip-{{ p.difficulty | downcase }}">{{ p.difficulty }}</span>{%- endif -%}
+{%- if p.time -%}<span class="chip chip-time"><b>Time</b> {{ p.time }}</span>{%- endif -%}
+{%- if p.space -%}<span class="chip chip-space"><b>Space</b> {{ p.space }}</span>{%- endif -%}

@@ -1,0 +1,46 @@
+---
+title: Home
+layout: default
+nav_order: 1
+has_toc: false
+---
+{%- assign problems = site.pages | where: "layout", "problem" -%}
+{%- assign topics = site.pages | where: "layout", "topic" | sort: "nav_order" -%}
+{%- assign solved = problems | size -%}
+{%- assign pct = solved | times: 100.0 | divided_by: site.total_problems | round: 1 -%}
+{%- assign easy = problems | where: "difficulty", "Easy" | size -%}
+{%- assign medium = problems | where: "difficulty", "Medium" | size -%}
+{%- assign hard = problems | where: "difficulty", "Hard" | size -%}
+
+<section class="home-hero">
+  <p class="eyebrow">DSA &middot; C++ &middot; Revision notes</p>
+  <h1 class="home-title">NeetCode <span class="grad">250</span></h1>
+  <p class="hero-sub">{{ site.description }}</p>
+
+  <div class="progress-card">
+    <div class="progress-head">
+      <span class="progress-label">Progress</span>
+      <span class="progress-count"><b>{{ solved }}</b> / {{ site.total_problems }} &middot; {{ pct }}%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width: {{ pct }}%"></div></div>
+    <div class="stat-row">
+      <div class="stat stat-easy"><span class="stat-num">{{ easy }}</span><span class="stat-label">Easy</span></div>
+      <div class="stat stat-medium"><span class="stat-num">{{ medium }}</span><span class="stat-label">Medium</span></div>
+      <div class="stat stat-hard"><span class="stat-num">{{ hard }}</span><span class="stat-label">Hard</span></div>
+      <div class="stat stat-topics"><span class="stat-num">{{ topics | size }}</span><span class="stat-label">Topics</span></div>
+    </div>
+  </div>
+</section>
+
+<h2 class="section-title">Topics</h2>
+<div class="topic-grid">
+  {% for t in topics %}
+  {%- assign count = site.pages | where: "parent", t.title | size -%}
+  <a class="topic-card" href="{{ t.url | relative_url }}">
+    <span class="topic-icon">{% include topic_icon.html topic=t %}</span>
+    <span class="topic-name">{{ t.title }}</span>
+    {% if t.description %}<span class="topic-desc">{{ t.description }}</span>{% endif %}
+    <span class="topic-count">{{ count }} problem{% if count != 1 %}s{% endif %} &rarr;</span>
+  </a>
+  {% endfor %}
+</div>

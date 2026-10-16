@@ -1,0 +1,16 @@
+title: NeetCode 250
+description: My revision notes for the NeetCode 250 sheet. Every solution in C++.
+remote_theme: just-the-docs/just-the-docs
+plugins:
+  - jekyll-remote-theme
+color_scheme: vibrant
+search_enabled: true
+back_to_top: true
+back_to_top_text: "Back to top"
+aux_links:
+  "GitHub": "https://github.com/visheshkodwani/DSA-NEETCODE"
+total_problems: 250
+mermaid:
+  version: "11.4.1"
+exclude:
+  - README.md

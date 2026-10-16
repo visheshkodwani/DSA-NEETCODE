@@ -1,0 +1,9 @@
+{%- comment -%}
+Matrix snapshot for dry runs. Rows split by ";". hl/done are flat indices (r * cols + c).
+  {% include matrix.html v="1,2,3;4,5,6" hl="0,1,2" done="5" label="→ top row" note="1 2 3" %}
+{%- endcomment -%}
+{%- assign rows = include.v | split: ";" -%}
+{%- assign hl = include.hl | prepend: "," | append: "," -%}
+{%- assign done = include.done | prepend: "," | append: "," -%}
+{%- assign k = 0 -%}
+<div class="arr-step">{% if include.label %}<span class="arr-label">{{ include.label }}</span>{% endif %}<div class="mat">{%- for row in rows -%}{%- assign r = forloop.index0 -%}{%- assign vals = row | split: "," -%}<div class="arr">{%- for x in vals -%}{%- assign key = k | prepend: "," | append: "," -%}<span class="cell{% if hl contains key %} hl{% elsif done contains key %} done{% endif %}"><b>{{ x | strip }}</b><i>{{ r }},{{ forloop.index0 }}</i></span>{%- assign k = k | plus: 1 -%}{%- endfor -%}</div>{%- endfor -%}</div>{% if include.note %}<span class="arr-note">{{ include.note }}</span>{% endif %}</div>

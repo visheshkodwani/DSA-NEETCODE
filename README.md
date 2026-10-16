@@ -1,3 +1,5 @@
-# DSA-NEETCODE
+# NeetCode 250
 
-Solutions to the NeetCode 250 DSA problems.
+My revision notes for the NeetCode 250 sheet. Every solution in C++.
+
+Site: https://visheshkodwani.github.io/DSA-NEETCODE/

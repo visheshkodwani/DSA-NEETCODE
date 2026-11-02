@@ -49,6 +49,10 @@ public:
 };
 ```
 
+## Best: already optimal
+
+Yours is already the best: `n / 2` swaps, O(n) time and O(1) space.
+
 {: .pitfall }
 > Loop to `n / 2`, not `n`. Going all the way swaps every pair twice, and you end up with the original string.
 

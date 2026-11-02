@@ -79,6 +79,10 @@ public:
 };
 ```
 
+## Best: already optimal
+
+Yours is already the best: every character is copied once, O(n + m) time. A shorter version with the same complexity is in the note below.
+
 {: .pitfall }
 > At most one of the two tail loops does anything, since the main loop only exits once a string is used up. Running both unconditionally is fine and saves an `if`.
 

@@ -93,7 +93,7 @@ private:
 };
 ```
 
-## Better: heap sort, O(1) extra space
+## Best: heap sort, O(n log n) time, O(1) extra space
 
 The problem asks for the smallest space possible. Merge sort needs O(n) for `temp`, but heap sort sorts in place:
 

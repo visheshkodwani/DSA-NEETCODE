@@ -80,7 +80,7 @@ public:
 };
 ```
 
-## Better: bucket sort, O(n)
+## Best: bucket sort, O(n)
 
 A frequency can only be `1..n`. So make `n + 1` buckets where `bucket[f]` holds the numbers seen exactly `f` times. Walk the buckets from `n` down to `1` and collect numbers until you have `k`. No comparisons at all.
 

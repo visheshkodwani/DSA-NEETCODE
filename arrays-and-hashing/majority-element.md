@@ -62,6 +62,10 @@ class Solution {
 };
 ```
 
+## Best: already optimal
+
+Yours is already the best: Boyer–Moore voting, O(n) time and O(1) space. A hash map costs O(n) space and sorting costs O(n log n).
+
 {: .pitfall }
 > The final candidate is only guaranteed correct because a majority is **promised**. If it might not exist, say `[1, 2, 3]`, you get some leftover candidate. Then you need a second pass that counts it and checks `> n / 2`.
 

@@ -56,6 +56,10 @@ public:
 };
 ```
 
+## Best: already optimal
+
+Yours is already the best. Every one of the `2n` output slots has to be written, so O(n) time and O(n) space for the answer can't be beaten.
+
 {: .pitfall }
 > Don't mix pre-sizing with `push_back`. `vector<int> ans(2*n)` already holds `2n` zeros, so `push_back` would append after them and give length `4n`. Either pre-size and assign by index, or `reserve(2*n)` and `push_back`.
 

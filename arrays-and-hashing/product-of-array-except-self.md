@@ -62,7 +62,7 @@ class Solution {
 };
 ```
 
-## Better: O(1) extra space
+## Best: O(n) time, O(1) extra space
 
 You don't need either helper array. Write the prefix products straight into `res`, then walk right to left with a single running `suffix` and multiply it in. The output array doesn't count as extra space, so this is O(1) extra.
 

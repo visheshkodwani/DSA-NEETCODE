@@ -68,7 +68,7 @@ public:
 };
 ```
 
-## Better: letter-count key, O(n·k)
+## Best: letter-count key, O(n·k)
 
 Sorting each word costs `k log k`. Counting letters costs `k`. Two words are anagrams exactly when their 26 letter counts match, so build the key from the counts instead. A `string(26, 0)` works as the key, and counts up to 100 fit in a `char`.
 

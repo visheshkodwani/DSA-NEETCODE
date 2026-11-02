@@ -57,6 +57,10 @@ class Solution {
 };
 ```
 
+## Best: already optimal
+
+Yours is already the best: one pass, O(n) time, O(1) space. Copying instead of swapping (`nums[nvi++] = nums[i]`) does fewer writes, with the same complexity.
+
 {: .pitfall }
 > Don't `erase` inside the loop. Each `erase` shifts the whole tail, which makes it O(n²), and it breaks your index: after erasing, `i++` skips the element that just slid into slot `i`.
 

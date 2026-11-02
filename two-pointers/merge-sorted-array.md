@@ -79,8 +79,36 @@ class Solution {
 };
 ```
 
+## Best: merge from the back, O(m+n) time, O(1) space
+
+The free slots are at the **end** of `nums1`, so fill it from the end. `i` points at the last real value in `nums1`, `j` at the last value in `nums2`, and `k` at the last slot. Each step writes the larger of `nums1[i]` and `nums2[j]` at `k`. `k` never passes `i`, so nothing is overwritten before it's read. Once `nums2` is used up, the rest of `nums1` is already in place.
+
+<div class="viz">
+<p class="viz-legend"><span class="hl">■ written</span> · <span class="done">■ final</span></p>
+{% include array.html v="10,20,20,40,0,0" label="start" note="i = 3, j = 1, k = 5, nums2 = [1,2]" %}
+{% include array.html v="10,20,20,40,0,40" hl="5" label="k = 5" note="40 > 2 → take 40, i = 2" %}
+{% include array.html v="10,20,20,40,20,40" hl="4" done="5" label="k = 4" note="20 > 2 → take 20, i = 1" %}
+{% include array.html v="10,20,20,20,20,40" hl="3" done="4,5" label="k = 3" note="20 > 2 → take 20, i = 0" %}
+{% include array.html v="10,20,10,20,20,40" hl="2" done="3,4,5" label="k = 2" note="10 > 2 → take 10, i = -1" %}
+{% include array.html v="10,2,10,20,20,40" hl="1" done="2,3,4,5" label="k = 1" note="nums1 used up → take 2, j = 0" %}
+{% include array.html v="1,2,10,20,20,40" done="0,1,2,3,4,5" label="k = 0" note="take 1, j = -1 → done" %}
+</div>
+
+```cpp
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int i = m - 1, j = n - 1, k = m + n - 1;
+        while (j >= 0) {
+            if (i >= 0 && nums1[i] > nums2[j]) nums1[k--] = nums1[i--];
+            else nums1[k--] = nums2[j--];
+        }
+    }
+};
+```
+
 {: .pitfall }
 > A full sort throws away the fact that both inputs are already sorted. After the copy, `nums1[0..m-1]` and `nums1[m..m+n-1]` are two sorted runs, so a single `mergehelper(nums1, 0, m - 1, m + n - 1)` is enough. That's `O(m+n)` with no recursion.
 
 {: .revisit }
-> The intended `O(1)`-space answer merges from the back, where the free slots are: `int i = m - 1, j = n - 1, k = m + n - 1; while (j >= 0) nums1[k--] = (i >= 0 && nums1[i] > nums2[j]) ? nums1[i--] : nums2[j--];`. Writing at `k` never overwrites a `nums1` value that hasn't been read yet, and once `nums2` runs out, the rest of `nums1` is already in place.
+> Merging from the front would overwrite `nums1` values before they're read. Going backwards works because the empty slots are at the back. Loop on `j >= 0`, not `i >= 0`: leftover `nums1` values are already where they belong.

@@ -58,8 +58,27 @@ class Solution {
 };
 ```
 
+## Best: stop when the pointers meet, O(n) time, O(1) space
+
+Same approach, with every loop bounded by `i < j`. Each pair is compared once, and the skips can never run past each other or off the ends.
+
+```cpp
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int i = 0, j = s.size() - 1;
+        while (i < j) {
+            while (i < j && !isalnum(s[i])) i++;
+            while (i < j && !isalnum(s[j])) j--;
+            if (tolower(s[i++]) != tolower(s[j--])) return false;
+        }
+        return true;
+    }
+};
+```
+
 {: .pitfall }
 > The loop runs until `i` hits the end, not until the pointers meet, so every pair is checked twice. Worse, on an all-punctuation string like `"?!"` both skips run off the ends and the compare reads `s[-1]`, which is undefined behavior. Bound everything by `i < j` instead.
 
 {: .revisit }
-> Tighter version: `while (i < j) { while (i < j && !isalnum(s[i])) i++; while (i < j && !isalnum(s[j])) j--; if (tolower(s[i++]) != tolower(s[j--])) return false; } return true;`. Half the comparisons, no out-of-bounds reads.
+> Building a cleaned, lowercased copy and comparing it with its reverse is also O(n), but it needs O(n) extra space. The two pointers do it in place.

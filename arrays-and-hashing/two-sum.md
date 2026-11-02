@@ -53,6 +53,10 @@ public:
 };
 ```
 
+## Best: already optimal
+
+Yours is already the best: one pass with a hash map, O(n) time and O(n) space. Using less space means sorting (O(n log n)) or brute force (O(n²)).
+
 {: .pitfall }
 > Check **before** inserting. With `nums = [3, 3], target = 6`, inserting first makes `i = 0` find itself and return `[0, 0]`. Checking first means the map only holds earlier indices.
 

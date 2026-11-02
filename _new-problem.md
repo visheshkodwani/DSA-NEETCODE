@@ -31,6 +31,11 @@ One-line problem statement.
 // solution
 ```
 
+## Best: approach name, O(?) time, O(?) space
+
+Why it beats the solution above, plus its code (and a dry run if it works differently).
+<!-- If the solution above is already optimal: "## Best: already optimal" and one line saying why. -->
+
 {: .pitfall }
 > Edge case or bug that bit you.
 

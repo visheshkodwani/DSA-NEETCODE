@@ -60,6 +60,22 @@ class Solution {
 };
 ```
 
+## Best: vertical scan, O(S) time, O(1) extra space
+
+Compare column by column: check character `i` of every string against `strs[0][i]`, and stop at the first string that's too short or differs. Nothing is copied until the single `substr` at the end, and it reads no character past the first mismatch. `S` is the total number of characters.
+
+```cpp
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        for (int i = 0; i < strs[0].size(); i++)
+            for (const string& s : strs)
+                if (i == s.size() || s[i] != strs[0][i]) return strs[0].substr(0, i);
+        return strs[0];
+    }
+};
+```
+
 {: .pitfall }
 > `lcpf(string a, string b)` takes both strings **by value**, so each call copies two strings. Use `const string&`. Also, `i` and `j` always move together, so one index is enough.
 

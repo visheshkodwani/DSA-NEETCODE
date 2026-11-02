@@ -79,6 +79,30 @@ class Solution {
 };
 ```
 
+## Best: Boyer–Moore with two candidates, O(n) time, O(1) space
+
+Same idea as yours, without the map. At most two values can appear more than `n/3` times, so keep two candidate slots with a vote count each. A match adds a vote, an empty slot gets taken, and anything else knocks one vote off both. Then count the two survivors to confirm them.
+
+```cpp
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+        int c1 = 0, c2 = 1, n1 = 0, n2 = 0;  // two different placeholder candidates
+        for (int x : nums) {
+            if (x == c1) n1++;
+            else if (x == c2) n2++;
+            else if (n1 == 0) c1 = x, n1 = 1;
+            else if (n2 == 0) c2 = x, n2 = 1;
+            else n1--, n2--;
+        }
+        vector<int> res;
+        for (int c : {c1, c2})
+            if (count(nums.begin(), nums.end(), c) > (int)nums.size() / 3) res.push_back(c);
+        return res;
+    }
+};
+```
+
 {: .pitfall }
 > **`toerase` must start empty at every cleanup.** It was first declared outside the loop. On `[1,2,3,1,2,1,2,4]` it still held `[1,2,3]` from i = 2, so at i = 7 it erased 1 and 2 even though they had count 1 left. The result was `[]`. Collecting keys first is still right: erasing from the map inside the range-for would invalidate the iterator.
 
@@ -86,4 +110,4 @@ class Solution {
 > **The verify pass is required.** On `[1,1,2,3,4]`, 4 survives with count 1 but appears only once, which isn't `> 5/3`.
 
 {: .revisit }
-> The usual version skips the map: keep `cand1, cnt1, cand2, cnt2`. If x matches a candidate, add a vote. Else, if a count is 0, take that slot. Else, decrement both. Then verify both candidates. The map here never holds more than 3 keys, so it's still O(1) space. The inner `for (int i : toerase)` shadows the outer `i`, so rename it.
+> The map here never holds more than 3 keys, so yours is still O(1) space. The inner `for (int i : toerase)` shadows the outer `i`, so rename it.

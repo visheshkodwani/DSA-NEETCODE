@@ -83,6 +83,10 @@ It depends on **where the swapped-in value came from**.
 {% include array.html v="0,1,2" hl="0,1" done="2" label="✓ mid stays" note="mid = 1: 0 → swap(0, 1) → [0, 1, 2]" %}
 </div>
 
+## Best: already optimal
+
+Yours is already the best: the Dutch national flag partition sorts in one pass, O(n) time and O(1) space.
+
 {: .pitfall }
 > The loop is `mid <= end`, not `mid < end`. When `mid == end`, there's still one unchecked element. `[1, 0]` with `<` stops after the 1 and returns `[1, 0]` unsorted.
 

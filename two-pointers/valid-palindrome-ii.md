@@ -69,8 +69,28 @@ class Solution {
 };
 ```
 
+## Best: O(n) time, O(1) space
+
+Yours already has the best complexity. This version passes the string by reference, drops the outer loop, and stops when the pointers meet, so a palindrome input isn't scanned twice.
+
+```cpp
+class Solution {
+public:
+    bool isPalindrome(const string& s, int a, int b) {
+        while (a < b)
+            if (s[a++] != s[b--]) return false;
+        return true;
+    }
+    bool validPalindrome(string s) {
+        int i = 0, j = s.size() - 1;
+        while (i < j && s[i] == s[j]) i++, j--;
+        return i >= j || isPalindrome(s, i + 1, j) || isPalindrome(s, i, j - 1);
+    }
+};
+```
+
 {: .pitfall }
 > `isPalindrome(string s, ...)` takes the string by value, so each call copies all `n` characters. Pass `const string& s`. The outer `while` also never loops a second time, because its body always returns.
 
 {: .revisit }
-> Tighter version: `int i = 0, j = s.size() - 1; while (i < j && s[i] == s[j]) i++, j--; return i >= j || isPalindrome(s, i + 1, j) || isPalindrome(s, i, j - 1);`. Stopping at `i < j` also means a palindrome input isn't scanned twice.
+> After the first mismatch, don't keep skipping. Only one deletion is allowed, so both checks must be plain palindrome checks. Brute force (try deleting each index) is O(n²).

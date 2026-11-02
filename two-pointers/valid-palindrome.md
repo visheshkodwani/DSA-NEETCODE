@@ -29,11 +29,11 @@ Output: false
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ compared</span> · <span class="done">■ matched</span></p>
-{% include array.html v="a,.,b,?,B,A" label="start" note="i = 0, j = 5" %}
-{% include array.html v="a,.,b,?,B,A" hl="0,5" label="i=0 j=5" note="'a' == 'a' ✓" %}
-{% include array.html v="a,.,b,?,B,A" hl="2,4" done="0,5" label="i=2 j=4" note="i skips '.', 'b' == 'b' ✓" %}
-{% include array.html v="a,.,b,?,B,A" hl="2,4" done="0,5" label="i=4 j=2" note="skip '?', pointers crossed but loop keeps going" %}
-{% include array.html v="a,.,b,?,B,A" done="0,2,4,5" label="end" note="i = 6, j = -1 → true" %}
+{% include array.html v="a,.,b,?,B,A" name="s" ptr="i=0,j=5" label="start" note="i at the left end, j at the right end" %}
+{% include array.html v="a,.,b,?,B,A" name="s" hl="0,5" ptr="i=0,j=5" label="compare" note="tolower: 'a' == 'a' ✓ → i++, j--" %}
+{% include array.html v="a,.,b,?,B,A" name="s" hl="2,4" done="0,5" ptr="i=2,j=4" label="compare" note="i skips '.', then 'b' == 'b' ✓" %}
+{% include array.html v="a,.,b,?,B,A" name="s" hl="2,4" done="0,5" ptr="i=4,j=2" label="crossed" note="skip '?': pointers crossed, but this loop keeps comparing pairs again" %}
+{% include array.html v="a,.,b,?,B,A" name="s" done="0,2,4,5" vars="i=6,j=-1" label="end" note="i ran off the end → true" %}
 </div>
 
 ## Code

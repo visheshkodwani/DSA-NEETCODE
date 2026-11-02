@@ -755,26 +755,187 @@ hr {
   color: $body-text-color;
 }
 
-// slides mode (set up in head_custom.html): every step shares one grid cell, so the box keeps the tallest step's height
+// step player (built in head_custom.html): header, controls, scrubber, then one slide at a time.
+// All slides share one grid cell, so the box keeps the tallest slide's height.
 .viz.slides {
+  padding: 0;
+  overflow: hidden;
+
   &:focus-visible {
     outline: 2px solid $violet;
     outline-offset: 2px;
   }
 
-  .viz-stage {
+  .viz-legend {
+    padding: 0 1.1rem;
+  }
+}
+
+.viz-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1.1rem;
+  border-bottom: 1px solid $border-color;
+}
+
+.viz-title {
+  font-family: $display-font;
+  font-weight: 600;
+  color: $body-heading-color;
+}
+
+.viz-count {
+  flex-shrink: 0;
+  font-family: $mono-font-family;
+  font-size: 0.8rem;
+  color: $muted;
+}
+
+.viz-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.8rem 1rem 0.2rem;
+
+  > button {
     display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: $body-heading-color;
+    cursor: pointer;
+
+    &:hover { background: $surface-2; }
   }
 
-  .arr-step {
-    grid-area: 1 / 1;
-    visibility: hidden;
-    border-top: 0;
+  svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .viz-play {
+    width: 2.9rem;
+    height: 2.9rem;
+    background: rgba($violet, 0.22);
+    color: #fff;
+
+    &:hover { background: rgba($violet, 0.35); }
+  }
+}
+
+.viz-speed {
+  display: inline-flex;
+  margin-left: 0.9rem;
+  border: 1px solid $border-color;
+  border-radius: 10px;
+  overflow: hidden;
+
+  button {
+    padding: 0.4rem 0.65rem;
+    border: 0;
+    background: transparent;
+    color: $muted;
+    font-family: $mono-font-family;
+    font-size: 0.75rem;
+    cursor: pointer;
 
     &.on {
-      visibility: visible;
-      animation: viz-in 0.25s ease-out;
+      background: rgba($violet, 0.22);
+      color: #fff;
     }
+  }
+}
+
+.viz-track {
+  position: relative;
+  height: 20px;
+  margin: 0.4rem 1.6rem 0.9rem;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: 2px;
+    background: $surface-2;
+  }
+}
+
+.viz-fill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 2px;
+  background: $grad;
+  transition: width 0.25s;
+}
+
+.viz-tick {
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: 10px;
+  margin: -5px 0 0 -1px;
+  border-radius: 1px;
+  background: $border-color;
+
+  &.on { background: rgba(#fff, 0.45); }
+}
+
+.viz-knob {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba($violet, 0.45);
+  transition: left 0.25s;
+}
+
+.viz-stage {
+  display: grid;
+  padding: 0.6rem 1.1rem 1.1rem;
+}
+
+.viz-slide {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+  visibility: hidden;
+
+  &.on {
+    visibility: visible;
+    animation: viz-in 0.25s ease-out;
+  }
+
+  .cell {
+    width: 2.9rem;
+    padding: 0.45rem 0 0.25rem;
+
+    b { font-size: 1.15rem; }
   }
 }
 
@@ -782,53 +943,89 @@ hr {
   from { opacity: 0; transform: translateX(8px); }
 }
 
-.viz-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid $border-color;
-
-  > button {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 8px;
-    border: 1px solid $border-color;
-    background: $surface-2;
-    color: $body-heading-color;
-    font-size: 1rem;
-    line-height: 1;
-    cursor: pointer;
-
-    &:hover { border-color: $pink; }
-  }
-
-  .viz-play { margin-left: auto; font-size: 0.75rem; }
-}
-
-.viz-dots {
+.viz-panel {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 12px;
+  background: rgba($surface-2, 0.55);
+  border: 1px solid $border-color;
+  overflow-x: auto;
+}
 
-  button {
-    width: 8px;
-    height: 8px;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    background: $border-color;
-    cursor: pointer;
+.arr-name {
+  flex-basis: 100%;
+  font-family: $mono-font-family;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $muted;
+}
 
-    &.on { background: $pink; }
+// pointer tags hang below their cell
+.cell { position: relative; }
+
+.arr.has-ptr { padding-bottom: 1.15rem; }
+.mat.has-ptr { gap: 1.3rem; }
+
+.ptr {
+  position: absolute;
+  top: 100%;
+  margin-top: 3px;
+  font-style: normal;
+  font-family: $mono-font-family;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: $cyan;
+}
+
+.vars {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+
+  span {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 8px;
+    background: $surface;
+    border: 1px solid $border-color;
+    font-family: $mono-font-family;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: $violet;
+  }
+
+  i {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.72rem;
+    color: $muted;
   }
 }
 
-.viz-count {
-  font-family: $mono-font-family;
-  font-size: 0.75rem;
-  color: $muted;
+.viz-desc {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: $surface;
+  border: 1px solid $border-color;
+  font-size: 0.92rem;
+  color: $body-text-color;
+
+  b {
+    margin-right: 0.6rem;
+    font-family: $mono-font-family;
+    font-size: 0.8rem;
+    color: $pink;
+  }
+
+  span + b { margin-left: 0.8rem; }
 }
 
 .viz-legend {

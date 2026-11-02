@@ -27,15 +27,23 @@ Output: "awbxyz"
 
 ## Dry run
 
-`word1 = "ab"`, `word2 = "wxyz"`, showing `ans` after each step:
+`word1 = "ab"`, `word2 = "wxyz"`:
 
 <div class="viz">
-<p class="viz-legend"><span class="hl">■ just added</span> · <span class="done">■ final</span></p>
-{% include array.html v="a" hl="0" label="l = 0" note="word1[0], i = 1" %}
-{% include array.html v="a,w" hl="1" label="l = 1" note="word2[0], j = 1" %}
-{% include array.html v="a,w,b" hl="2" label="l = 2" note="word1[1], i = 2 → word1 done" %}
-{% include array.html v="a,w,b,x,y,z" hl="3,4,5" label="tail" note="append rest of word2" %}
-{% include array.html v="a,w,b,x,y,z" done="0,1,2,3,4,5" label="end" note="&quot;awbxyz&quot;" %}
+<p class="viz-legend"><span class="hl">■ taken this step</span> · <span class="done">■ used</span></p>
+{% include array.html v="a,b" name="word1" hl="0" ptr="i=0" label="l = 0" note="l is even → take word1[i], i++" %}
+{% include array.html v="w,x,y,z" name="word2" ptr="j=0" join=true %}
+{% include array.html v="a" name="ans" hl="0" vars="l=0" join=true %}
+{% include array.html v="a,b" name="word1" done="0" ptr="i=1" label="l = 1" note="l is odd → take word2[j], j++" %}
+{% include array.html v="w,x,y,z" name="word2" hl="0" ptr="j=0" join=true %}
+{% include array.html v="a,w" name="ans" hl="1" vars="l=1" join=true %}
+{% include array.html v="a,b" name="word1" hl="1" done="0" ptr="i=1" label="l = 2" note="take word1[i] → i = 2, word1 is used up, main loop ends" %}
+{% include array.html v="w,x,y,z" name="word2" done="0" ptr="j=1" join=true %}
+{% include array.html v="a,w,b" name="ans" hl="2" vars="l=2" join=true %}
+{% include array.html v="a,b" name="word1" done="0,1" label="tail" note="second tail loop appends the rest of word2" %}
+{% include array.html v="w,x,y,z" name="word2" hl="1,2,3" done="0" ptr="j=1" join=true %}
+{% include array.html v="a,w,b,x,y,z" name="ans" hl="3,4,5" join=true %}
+{% include array.html v="a,w,b,x,y,z" name="ans" done="0,1,2,3,4,5" label="end" note="return &quot;awbxyz&quot;" %}
 </div>
 
 ## Code

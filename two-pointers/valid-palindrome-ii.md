@@ -29,11 +29,11 @@ Output: false
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ compared</span> · <span class="done">■ matched</span></p>
-{% include array.html v="a,b,b,c,a" label="start" note="i = 0, j = 4" %}
-{% include array.html v="a,b,b,c,a" hl="0,4" label="i=0 j=4" note="'a' == 'a' ✓" %}
-{% include array.html v="a,b,b,c,a" hl="1,3" done="0,4" label="i=1 j=3" note="'b' != 'c' → mismatch" %}
-{% include array.html v="a,b,b,c,a" hl="1,2" done="0,4" label="drop s[3]" note="isPalindrome(1, 2): 'bb' ✓" %}
-{% include array.html v="a,b,b,c,a" done="0,1,2,4" label="end" note="one deletion works → true" %}
+{% include array.html v="a,b,b,c,a" name="s" ptr="i=0,j=4" label="start" note="walk in from both ends" %}
+{% include array.html v="a,b,b,c,a" name="s" hl="0,4" ptr="i=0,j=4" label="compare" note="'a' == 'a' ✓ → i++, j--" %}
+{% include array.html v="a,b,b,c,a" name="s" hl="1,3" done="0,4" ptr="i=1,j=3" label="mismatch" note="'b' != 'c' → one of them must be deleted" %}
+{% include array.html v="a,b,b,c,a" name="s" hl="1,2" done="0,4" ptr="a=1,b=2" label="drop s[j]" note="isPalindrome(s, i, j − 1): 'bb' ✓" %}
+{% include array.html v="a,b,b,c,a" name="s" done="0,1,2,4" label="end" note="one deletion works → true" %}
 </div>
 
 ## Code

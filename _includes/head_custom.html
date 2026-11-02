@@ -14,45 +14,103 @@ document.addEventListener("DOMContentLoaded", () => {
       `<span class="${cls[g.findIndex((x) => x !== undefined) + 1]}">${m}</span>`);
   });
 });
-/* Dry runs as slides: show one .arr-step at a time with prev / play / next, dots, and arrow keys. */
+/* Dry runs as a step player. Each array.html / matrix.html include is one step; join=true puts it on the previous step's slide. ptr, name and vars are drawn here. */
 document.addEventListener("DOMContentLoaded", () => {
+  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const pairs = (s) => (s || "").split(",").filter(Boolean).map((p) => p.split("=").map((x) => x.trim()));
+  const icon = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
+  const PLAY = icon("M7 5l12 7-12 7z"), PAUSE = icon("M8 5v14M16 5v14");
+  document.querySelectorAll(".arr-step").forEach((step) => {
+    const grid = step.querySelector(".arr, .mat");
+    const cells = step.querySelectorAll(".cell");
+    pairs(step.dataset.ptr).forEach(([name, k]) => {
+      const c = cells[+k];
+      if (!c) return;
+      const tag = c.querySelector(".ptr") || c.appendChild(el("em", "ptr"));
+      tag.textContent = tag.textContent ? `${tag.textContent}, ${name}` : name;
+      grid.classList.add("has-ptr");
+    });
+    if (step.dataset.vars) grid.after(el("span", "vars", pairs(step.dataset.vars).map(([k, v]) => `<span><i>${k} =</i>${v}</span>`).join("")));
+    if (step.dataset.name) step.prepend(el("span", "arr-name", step.dataset.name));
+  });
   document.querySelectorAll(".viz").forEach((viz) => {
     const steps = [...viz.querySelectorAll(".arr-step")];
-    if (steps.length < 2) return;
-    const stage = document.createElement("div");
-    stage.className = "viz-stage";
+    const groups = [];
+    steps.forEach((s) => (s.classList.contains("join") && groups.length ? groups[groups.length - 1].push(s) : groups.push([s])));
+    if (groups.length < 2) return;
+    const stage = el("div", "viz-stage");
     steps[0].before(stage);
-    stage.append(...steps);
-    const nav = document.createElement("div");
-    nav.className = "viz-nav";
-    nav.innerHTML = `<button type="button" aria-label="Previous step">‹</button><span class="viz-dots">${steps.map((_, k) => `<button type="button" aria-label="Step ${k + 1}"></button>`).join("")}</span><span class="viz-count"></span><button type="button" class="viz-play" aria-label="Play">▶</button><button type="button" aria-label="Next step">›</button>`;
-    viz.append(nav);
+    const slides = groups.map((g) => {
+      const slide = el("div", "viz-slide"), desc = el("div", "viz-desc");
+      g.forEach((s) => {
+        const panel = el("div", "viz-panel");
+        panel.append(...s.querySelectorAll(":scope > .arr-name, :scope > .arr, :scope > .mat, :scope > .vars"));
+        slide.append(panel);
+        const label = s.querySelector(".arr-label"), note = s.querySelector(".arr-note");
+        if (label) desc.append(el("b", null, label.innerHTML));
+        if (note) desc.append(el("span", null, note.innerHTML));
+        s.remove();
+      });
+      if (desc.childElementCount) slide.append(desc);
+      stage.append(slide);
+      return slide;
+    });
+    const n = slides.length;
+    let h = viz.previousElementSibling;
+    while (h && h.tagName !== "H2") h = h.previousElementSibling;
+    const t = h ? h.textContent.split(",")[0].trim() : "Dry run";
+    const head = el("div", "viz-head", `<span class="viz-title"></span><span class="viz-count"></span>`);
+    head.firstChild.textContent = t === "Dry run" ? "Your solution" : t;
+    const bar = el("div", "viz-bar",
+      `<button type="button" aria-label="Previous step">${icon("M6 5v14M18 5 8 12l10 7z")}</button>` +
+      `<button type="button" class="viz-play" aria-label="Play">${PLAY}</button>` +
+      `<button type="button" aria-label="Next step">${icon("M18 5v14M6 5l10 7-10 7z")}</button>` +
+      `<span class="viz-speed"><button type="button" data-s="2">0.5x</button><button type="button" data-s="1" class="on">1x</button><button type="button" data-s="0.5">2x</button></span>`);
+    const track = el("div", "viz-track", `<div class="viz-fill"></div>${slides.map((_, k) => `<span class="viz-tick" style="left:${(k / (n - 1)) * 100}%"></span>`).join("")}<span class="viz-knob"></span>`);
+    viz.prepend(head, bar, track);
     viz.classList.add("slides");
     viz.tabIndex = 0;
-    const [prev, , , play, next] = nav.children;
-    const dots = [...nav.querySelectorAll(".viz-dots button")];
-    let cur = 0, timer = null;
+    const [prev, play, next] = bar.children;
+    const speeds = [...bar.querySelectorAll(".viz-speed button")];
+    const ticks = [...track.querySelectorAll(".viz-tick")];
+    const fill = track.querySelector(".viz-fill"), knob = track.querySelector(".viz-knob");
+    let cur = 0, timer = null, speed = 1;
     const show = (k) => {
-      cur = (k + steps.length) % steps.length;
-      steps.forEach((s, x) => s.classList.toggle("on", x === cur));
-      dots.forEach((d, x) => d.classList.toggle("on", x === cur));
-      nav.querySelector(".viz-count").textContent = `${cur + 1} / ${steps.length}`;
+      cur = Math.max(0, Math.min(n - 1, k));
+      slides.forEach((s, x) => s.classList.toggle("on", x === cur));
+      ticks.forEach((tk, x) => tk.classList.toggle("on", x <= cur));
+      fill.style.width = knob.style.left = `${(cur / (n - 1)) * 100}%`;
+      head.lastChild.textContent = `Step ${cur + 1} / ${n}`;
     };
-    const stop = () => { clearInterval(timer); timer = null; play.textContent = "▶"; play.setAttribute("aria-label", "Play"); };
+    const stop = () => { clearInterval(timer); timer = null; play.innerHTML = PLAY; play.setAttribute("aria-label", "Play"); };
+    const start = () => {
+      clearInterval(timer);
+      play.innerHTML = PAUSE;
+      play.setAttribute("aria-label", "Pause");
+      timer = setInterval(() => (cur === n - 1 ? stop() : show(cur + 1)), 1400 * speed);
+    };
     const go = (k) => { stop(); show(k); };
     prev.onclick = () => go(cur - 1);
     next.onclick = () => go(cur + 1);
-    dots.forEach((d, k) => (d.onclick = () => go(k)));
     play.onclick = () => {
       if (timer) return stop();
-      if (cur === steps.length - 1) show(0);
-      play.textContent = "❚❚";
-      play.setAttribute("aria-label", "Pause");
-      timer = setInterval(() => (cur === steps.length - 1 ? stop() : show(cur + 1)), 1400);
+      if (cur === n - 1) show(0);
+      start();
+    };
+    speeds.forEach((b) => (b.onclick = () => {
+      speed = +b.dataset.s;
+      speeds.forEach((x) => x.classList.toggle("on", x === b));
+      if (timer) start();
+    }));
+    track.onclick = (e) => {
+      const r = track.getBoundingClientRect();
+      go(Math.round(((e.clientX - r.left) / r.width) * (n - 1)));
     };
     viz.addEventListener("keydown", (e) => {
+      if (e.target !== viz) return;
       if (e.key === "ArrowRight") { e.preventDefault(); go(cur + 1); }
       if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1); }
+      if (e.key === " ") { e.preventDefault(); play.click(); }
     });
     show(0);
   });

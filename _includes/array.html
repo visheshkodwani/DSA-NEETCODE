@@ -2,8 +2,10 @@
 Array snapshot for dry runs.
   {% include array.html v="7,4,1,5,3" hl="0,2" done="0" label="Pass 1" note="swap 7 ↔ 1" %}
   v: values · hl: indices to highlight (pink) · done: indices sorted/final (green). No spaces in hl/done.
+  name: row caption ("nums1") · ptr: pointers under cells ("i=0,j=4") · vars: variable chips ("m=3,n=3")
+  join=true: show on the same slide as the previous include (several rows in one step).
 {%- endcomment -%}
 {%- assign vals = include.v | split: "," -%}
 {%- assign hl = include.hl | prepend: "," | append: "," -%}
 {%- assign done = include.done | prepend: "," | append: "," -%}
-<div class="arr-step">{% if include.label %}<span class="arr-label">{{ include.label }}</span>{% endif %}<div class="arr">{%- for x in vals -%}{%- assign key = forloop.index0 | prepend: "," | append: "," -%}<span class="cell{% if hl contains key %} hl{% elsif done contains key %} done{% endif %}"><b>{{ x | strip }}</b><i>{{ forloop.index0 }}</i></span>{%- endfor -%}</div>{% if include.note %}<span class="arr-note">{{ include.note }}</span>{% endif %}</div>
+<div class="arr-step{% if include.join %} join{% endif %}"{% if include.ptr %} data-ptr="{{ include.ptr }}"{% endif %}{% if include.name %} data-name="{{ include.name }}"{% endif %}{% if include.vars %} data-vars="{{ include.vars }}"{% endif %}>{% if include.label %}<span class="arr-label">{{ include.label }}</span>{% endif %}<div class="arr">{%- for x in vals -%}{%- assign key = forloop.index0 | prepend: "," | append: "," -%}<span class="cell{% if hl contains key %} hl{% elsif done contains key %} done{% endif %}"><b>{{ x | strip }}</b><i>{{ forloop.index0 }}</i></span>{%- endfor -%}</div>{% if include.note %}<span class="arr-note">{{ include.note }}</span>{% endif %}</div>

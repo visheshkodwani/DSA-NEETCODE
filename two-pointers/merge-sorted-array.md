@@ -29,10 +29,12 @@ Output: [5]
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ changed</span> · <span class="done">■ final</span></p>
-{% include array.html v="10,20,20,40,0,0" label="start" note="m = 4, last 2 slots are placeholders" %}
-{% include array.html v="10,20,20,40,1,2" hl="4,5" label="copy" note="nums1[4..5] = nums2" %}
-{% include array.html v="10,20,20,1,2,40" hl="3,4,5" label="sort halves" note="mergeSort(0,2) no change, mergeSort(3,5) → [1,2,40]" %}
-{% include array.html v="1,2,10,20,20,40" done="0,1,2,3,4,5" label="merge" note="mergehelper(0, 2, 5)" %}
+{% include array.html v="10,20,20,40,0,0" name="nums1" vars="m=4,n=2" label="start" note="the last n slots of nums1 are placeholders" %}
+{% include array.html v="1,2" name="nums2" join=true %}
+{% include array.html v="10,20,20,40,1,2" name="nums1" hl="4,5" ptr="i=4" label="copy" note="nums1[i] = nums2[j] for i = m … m + n − 1" %}
+{% include array.html v="1,2" name="nums2" hl="0,1" join=true %}
+{% include array.html v="10,20,20,1,2,40" name="nums1" hl="3,4,5" label="sort halves" note="mergeSort(0, 2) no change, mergeSort(3, 5) → [1, 2, 40]" %}
+{% include array.html v="1,2,10,20,20,40" name="nums1" done="0,1,2,3,4,5" label="merge" note="mergehelper(0, 2, 5) merges the two halves" %}
 </div>
 
 ## Code
@@ -85,13 +87,20 @@ The free slots are at the **end** of `nums1`, so fill it from the end. `i` point
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ written</span> · <span class="done">■ final</span></p>
-{% include array.html v="10,20,20,40,0,0" label="start" note="i = 3, j = 1, k = 5, nums2 = [1,2]" %}
-{% include array.html v="10,20,20,40,0,40" hl="5" label="k = 5" note="40 > 2 → take 40, i = 2" %}
-{% include array.html v="10,20,20,40,20,40" hl="4" done="5" label="k = 4" note="20 > 2 → take 20, i = 1" %}
-{% include array.html v="10,20,20,20,20,40" hl="3" done="4,5" label="k = 3" note="20 > 2 → take 20, i = 0" %}
-{% include array.html v="10,20,10,20,20,40" hl="2" done="3,4,5" label="k = 2" note="10 > 2 → take 10, i = -1" %}
-{% include array.html v="10,2,10,20,20,40" hl="1" done="2,3,4,5" label="k = 1" note="nums1 used up → take 2, j = 0" %}
-{% include array.html v="1,2,10,20,20,40" done="0,1,2,3,4,5" label="k = 0" note="take 1, j = -1 → done" %}
+{% include array.html v="10,20,20,40,0,0" name="nums1" ptr="i=3,k=5" label="start" note="i = m − 1, j = n − 1, k = m + n − 1" %}
+{% include array.html v="1,2" name="nums2" ptr="j=1" join=true %}
+{% include array.html v="10,20,20,40,0,40" name="nums1" hl="5" ptr="i=3,k=5" label="k = 5" note="nums1[i] = 40 > nums2[j] = 2 → write 40, i--" %}
+{% include array.html v="1,2" name="nums2" ptr="j=1" join=true %}
+{% include array.html v="10,20,20,40,20,40" name="nums1" hl="4" done="5" ptr="i=2,k=4" label="k = 4" note="20 > 2 → write 20, i--" %}
+{% include array.html v="1,2" name="nums2" ptr="j=1" join=true %}
+{% include array.html v="10,20,20,20,20,40" name="nums1" hl="3" done="4,5" ptr="i=1,k=3" label="k = 3" note="20 > 2 → write 20, i--" %}
+{% include array.html v="1,2" name="nums2" ptr="j=1" join=true %}
+{% include array.html v="10,20,10,20,20,40" name="nums1" hl="2" done="3,4,5" ptr="i=0,k=2" label="k = 2" note="10 > 2 → write 10, i = −1" %}
+{% include array.html v="1,2" name="nums2" ptr="j=1" join=true %}
+{% include array.html v="10,2,10,20,20,40" name="nums1" hl="1" done="2,3,4,5" ptr="k=1" vars="i=-1" label="k = 1" note="nums1 is used up → write nums2[j] = 2, j--" %}
+{% include array.html v="1,2" name="nums2" hl="1" ptr="j=1" join=true %}
+{% include array.html v="1,2,10,20,20,40" name="nums1" hl="0" done="1,2,3,4,5" ptr="k=0" vars="i=-1" label="k = 0" note="write nums2[j] = 1, j = −1 → loop ends" %}
+{% include array.html v="1,2" name="nums2" hl="0" done="1" ptr="j=0" join=true %}
 </div>
 
 ```cpp

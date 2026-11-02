@@ -29,10 +29,10 @@ Output: ["r","a","c","e","c","a","r"]
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ swapped</span> · <span class="done">■ final</span></p>
-{% include array.html v="h,e,l,l,o" label="start" note="n = 5, loop i < 2" %}
-{% include array.html v="o,e,l,l,h" hl="0,4" label="i = 0" note="swap(s[0], s[4])" %}
-{% include array.html v="o,l,l,e,h" hl="1,3" done="0,4" label="i = 1" note="swap(s[1], s[3])" %}
-{% include array.html v="o,l,l,e,h" done="0,1,2,3,4" label="end" note="middle s[2] never moves" %}
+{% include array.html v="h,e,l,l,o" name="s" ptr="i=0,j=4" vars="n=5" label="start" note="j = n − 1 − i, loop while i < n / 2" %}
+{% include array.html v="o,e,l,l,h" name="s" hl="0,4" ptr="i=0,j=4" vars="n=5" label="i = 0" note="swap(s[0], s[4])" %}
+{% include array.html v="o,l,l,e,h" name="s" hl="1,3" done="0,4" ptr="i=1,j=3" vars="n=5" label="i = 1" note="swap(s[1], s[3])" %}
+{% include array.html v="o,l,l,e,h" name="s" done="0,1,2,3,4" ptr="i=2" vars="n=5" label="end" note="i = 2 = n / 2 → stop, the middle never moves" %}
 </div>
 
 ## Code

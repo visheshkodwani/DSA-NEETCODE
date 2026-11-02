@@ -14,4 +14,47 @@ document.addEventListener("DOMContentLoaded", () => {
       `<span class="${cls[g.findIndex((x) => x !== undefined) + 1]}">${m}</span>`);
   });
 });
+/* Dry runs as slides: show one .arr-step at a time with prev / play / next, dots, and arrow keys. */
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".viz").forEach((viz) => {
+    const steps = [...viz.querySelectorAll(".arr-step")];
+    if (steps.length < 2) return;
+    const stage = document.createElement("div");
+    stage.className = "viz-stage";
+    steps[0].before(stage);
+    stage.append(...steps);
+    const nav = document.createElement("div");
+    nav.className = "viz-nav";
+    nav.innerHTML = `<button type="button" aria-label="Previous step">‹</button><span class="viz-dots">${steps.map((_, k) => `<button type="button" aria-label="Step ${k + 1}"></button>`).join("")}</span><span class="viz-count"></span><button type="button" class="viz-play" aria-label="Play">▶</button><button type="button" aria-label="Next step">›</button>`;
+    viz.append(nav);
+    viz.classList.add("slides");
+    viz.tabIndex = 0;
+    const [prev, , , play, next] = nav.children;
+    const dots = [...nav.querySelectorAll(".viz-dots button")];
+    let cur = 0, timer = null;
+    const show = (k) => {
+      cur = (k + steps.length) % steps.length;
+      steps.forEach((s, x) => s.classList.toggle("on", x === cur));
+      dots.forEach((d, x) => d.classList.toggle("on", x === cur));
+      nav.querySelector(".viz-count").textContent = `${cur + 1} / ${steps.length}`;
+    };
+    const stop = () => { clearInterval(timer); timer = null; play.textContent = "▶"; play.setAttribute("aria-label", "Play"); };
+    const go = (k) => { stop(); show(k); };
+    prev.onclick = () => go(cur - 1);
+    next.onclick = () => go(cur + 1);
+    dots.forEach((d, k) => (d.onclick = () => go(k)));
+    play.onclick = () => {
+      if (timer) return stop();
+      if (cur === steps.length - 1) show(0);
+      play.textContent = "❚❚";
+      play.setAttribute("aria-label", "Pause");
+      timer = setInterval(() => (cur === steps.length - 1 ? stop() : show(cur + 1)), 1400);
+    };
+    viz.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") { e.preventDefault(); go(cur + 1); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1); }
+    });
+    show(0);
+  });
+});
 </script>

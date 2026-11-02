@@ -755,6 +755,82 @@ hr {
   color: $body-text-color;
 }
 
+// slides mode (set up in head_custom.html): every step shares one grid cell, so the box keeps the tallest step's height
+.viz.slides {
+  &:focus-visible {
+    outline: 2px solid $violet;
+    outline-offset: 2px;
+  }
+
+  .viz-stage {
+    display: grid;
+  }
+
+  .arr-step {
+    grid-area: 1 / 1;
+    visibility: hidden;
+    border-top: 0;
+
+    &.on {
+      visibility: visible;
+      animation: viz-in 0.25s ease-out;
+    }
+  }
+}
+
+@keyframes viz-in {
+  from { opacity: 0; transform: translateX(8px); }
+}
+
+.viz-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid $border-color;
+
+  > button {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    border: 1px solid $border-color;
+    background: $surface-2;
+    color: $body-heading-color;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover { border-color: $pink; }
+  }
+
+  .viz-play { margin-left: auto; font-size: 0.75rem; }
+}
+
+.viz-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+
+  button {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: $border-color;
+    cursor: pointer;
+
+    &.on { background: $pink; }
+  }
+}
+
+.viz-count {
+  font-family: $mono-font-family;
+  font-size: 0.75rem;
+  color: $muted;
+}
+
 .viz-legend {
   margin: 0 0 0.6rem;
   font-size: 0.78rem;

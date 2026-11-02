@@ -45,11 +45,11 @@ Array after each `merge` call:
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ just merged</span> · <span class="done">■ final</span></p>
-{% include array.html v="5,10,2,1,3" label="start" %}
-{% include array.html v="5,10,2,1,3" hl="0,1" label="[0..1]" note="[5] + [10] → [5, 10]" %}
-{% include array.html v="2,5,10,1,3" hl="0,1,2" label="[0..2]" note="[5, 10] + [2] → [2, 5, 10]" %}
-{% include array.html v="2,5,10,1,3" hl="3,4" label="[3..4]" note="[1] + [3] → [1, 3]" %}
-{% include array.html v="1,2,3,5,10" done="0,1,2,3,4" label="[0..4]" note="[2, 5, 10] + [1, 3] → [1, 2, 3, 5, 10]" %}
+{% include array.html v="5,10,2,1,3" name="arr" label="start" note="mergeSort(arr, 0, 4)" %}
+{% include array.html v="5,10,2,1,3" name="arr" hl="0,1" ptr="l=0,m=0,r=1" label="merge [0..1]" note="[5] + [10] → [5, 10]" %}
+{% include array.html v="2,5,10,1,3" name="arr" hl="0,1,2" ptr="l=0,m=1,r=2" label="merge [0..2]" note="[5, 10] + [2] → [2, 5, 10]" %}
+{% include array.html v="2,5,10,1,3" name="arr" hl="3,4" ptr="l=3,m=3,r=4" label="merge [3..4]" note="[1] + [3] → [1, 3]" %}
+{% include array.html v="1,2,3,5,10" name="arr" done="0,1,2,3,4" ptr="l=0,m=2,r=4" label="merge [0..4]" note="[2, 5, 10] + [1, 3] → [1, 2, 3, 5, 10]" %}
 </div>
 
 ## Code
@@ -104,12 +104,12 @@ The problem asks for the smallest space possible. Merge sort needs O(n) for `tem
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ moved this step</span> · <span class="done">■ final</span></p>
-{% include array.html v="5,10,2,1,3" label="start" %}
-{% include array.html v="10,5,2,1,3" hl="0,1" label="build heap" note="5 sifts down below 10 → max-heap" %}
-{% include array.html v="5,3,2,1,10" hl="0,1" done="4" label="end = 4" note="swap 10 to the end, sift 3 down" %}
-{% include array.html v="3,1,2,5,10" hl="0,1" done="3,4" label="end = 3" note="swap 5 into slot 3, sift 1 down" %}
-{% include array.html v="2,1,3,5,10" done="2,3,4" label="end = 2" note="swap 3 into slot 2, 2 is already the max" %}
-{% include array.html v="1,2,3,5,10" done="0,1,2,3,4" label="end = 1" note="swap 2 into slot 1 → sorted" %}
+{% include array.html v="5,10,2,1,3" name="nums" label="start" vars="n=5" note="heapify i = 1, then i = 0" %}
+{% include array.html v="10,5,2,1,3" name="nums" hl="0,1" ptr="i=0,big=1" label="build heap" note="5 sifts down below 10 → max-heap" %}
+{% include array.html v="5,3,2,1,10" name="nums" hl="0,1" done="4" ptr="end=4" label="end = 4" note="swap 10 to the end, sift 3 down" %}
+{% include array.html v="3,1,2,5,10" name="nums" hl="0,1" done="3,4" ptr="end=3" label="end = 3" note="swap 5 into slot 3, sift 1 down" %}
+{% include array.html v="2,1,3,5,10" name="nums" done="2,3,4" ptr="end=2" label="end = 2" note="swap 3 into slot 2, 2 is already the max" %}
+{% include array.html v="1,2,3,5,10" name="nums" done="0,1,2,3,4" ptr="end=1" label="end = 1" note="swap 2 into slot 1 → sorted" %}
 </div>
 
 ```cpp

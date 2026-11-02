@@ -29,13 +29,13 @@ Output: 2
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ current i</span> · <span class="done">■ processed</span></p>
-{% include array.html v="5,5,1,1,1,5,5" hl="0" label="i = 0" note="count 0 → ans = 5, count = 1" %}
-{% include array.html v="5,5,1,1,1,5,5" hl="1" done="0" label="i = 1" note="5 = ans → count = 2" %}
-{% include array.html v="5,5,1,1,1,5,5" hl="2" done="0,1" label="i = 2" note="1 ≠ 5 → count = 1" %}
-{% include array.html v="5,5,1,1,1,5,5" hl="3" done="0,1,2" label="i = 3" note="1 ≠ 5 → count = 0" %}
-{% include array.html v="5,5,1,1,1,5,5" hl="4" done="0,1,2,3" label="i = 4" note="count 0 → ans = 1, count = 1" %}
-{% include array.html v="5,5,1,1,1,5,5" hl="5" done="0,1,2,3,4" label="i = 5" note="5 ≠ 1 → count = 0" %}
-{% include array.html v="5,5,1,1,1,5,5" hl="6" done="0,1,2,3,4,5" label="i = 6" note="count 0 → ans = 5, count = 1 → return 5" %}
+{% include array.html v="5,5,1,1,1,5,5" name="nums" hl="0" done="" ptr="i=0" vars="ans=5,count=1" label="i = 0" note="count is 0 → ans = 5, count = 1" %}
+{% include array.html v="5,5,1,1,1,5,5" name="nums" hl="1" done="0" ptr="i=1" vars="ans=5,count=2" label="i = 1" note="5 == ans → count++" %}
+{% include array.html v="5,5,1,1,1,5,5" name="nums" hl="2" done="0,1" ptr="i=2" vars="ans=5,count=1" label="i = 2" note="1 ≠ ans → count--" %}
+{% include array.html v="5,5,1,1,1,5,5" name="nums" hl="3" done="0,1,2" ptr="i=3" vars="ans=5,count=0" label="i = 3" note="1 ≠ ans → count--" %}
+{% include array.html v="5,5,1,1,1,5,5" name="nums" hl="4" done="0,1,2,3" ptr="i=4" vars="ans=1,count=1" label="i = 4" note="count is 0 → ans = 1, count = 1" %}
+{% include array.html v="5,5,1,1,1,5,5" name="nums" hl="5" done="0,1,2,3,4" ptr="i=5" vars="ans=1,count=0" label="i = 5" note="5 ≠ ans → count--" %}
+{% include array.html v="5,5,1,1,1,5,5" name="nums" hl="6" done="0,1,2,3,4,5" ptr="i=6" vars="ans=5,count=1" label="i = 6" note="count is 0 → ans = 5, count = 1 → return 5" %}
 </div>
 
 ## Code

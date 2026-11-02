@@ -28,11 +28,15 @@ Output: [0, -6, 0, 0, 0]
 ## Dry run
 
 <div class="viz">
-<p class="viz-legend"><span class="done">■ answer</span></p>
-{% include array.html v="1,2,4,6" label="nums" %}
-{% include array.html v="1,1,2,8" label="prefix" note="product of nums[0..i-1]" %}
-{% include array.html v="48,24,6,1" label="suffix" note="product of nums[i+1..n-1] (after reverse)" %}
-{% include array.html v="48,24,12,8" done="0,1,2,3" label="prefix × suffix" note="1·48, 1·24, 2·6, 8·1" %}
+<p class="viz-legend"><span class="hl">■ built this step</span> · <span class="done">■ answer</span></p>
+{% include array.html v="1,2,4,6" name="nums" label="pass 1" note="prefix[i] = product of nums[0..i-1]" %}
+{% include array.html v="1,1,2,8" name="prefix" hl="0,1,2,3" join=true %}
+{% include array.html v="1,2,4,6" name="nums" label="pass 2" note="suffix[i] = product of nums[i+1..n-1], built backwards then reversed" %}
+{% include array.html v="1,1,2,8" name="prefix" join=true %}
+{% include array.html v="48,24,6,1" name="suffix" hl="0,1,2,3" join=true %}
+{% include array.html v="1,1,2,8" name="prefix" label="pass 3" note="nums[i] = prefix[i] × suffix[i]: 1·48, 1·24, 2·6, 8·1" %}
+{% include array.html v="48,24,6,1" name="suffix" join=true %}
+{% include array.html v="48,24,12,8" name="nums" done="0,1,2,3" join=true %}
 </div>
 
 ## Code
@@ -68,11 +72,16 @@ You don't need either helper array. Write the prefix products straight into `res
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ multiplied this step</span> · <span class="done">■ final</span></p>
-{% include array.html v="1,1,2,8" label="after pass 1" note="res = prefix products" %}
-{% include array.html v="1,1,2,8" hl="3" label="i = 3" note="res[3] = 8 × 1 = 8, suffix = 6" %}
-{% include array.html v="1,1,12,8" hl="2" done="3" label="i = 2" note="res[2] = 2 × 6 = 12, suffix = 24" %}
-{% include array.html v="1,24,12,8" hl="1" done="2,3" label="i = 1" note="res[1] = 1 × 24 = 24, suffix = 48" %}
-{% include array.html v="48,24,12,8" hl="0" done="1,2,3" label="i = 0" note="res[0] = 1 × 48 = 48" %}
+{% include array.html v="1,2,4,6" name="nums" vars="suffix=1" label="after pass 1" note="res holds the prefix products" %}
+{% include array.html v="1,1,2,8" name="res" join=true %}
+{% include array.html v="1,2,4,6" name="nums" ptr="i=3" vars="suffix=1" label="i = 3" note="res[3] = 8 × 1 = 8, then suffix ×= 6" %}
+{% include array.html v="1,1,2,8" name="res" hl="3" done="" ptr="i=3" join=true %}
+{% include array.html v="1,2,4,6" name="nums" ptr="i=2" vars="suffix=6" label="i = 2" note="res[2] = 2 × 6 = 12, then suffix ×= 4" %}
+{% include array.html v="1,1,12,8" name="res" hl="2" done="3" ptr="i=2" join=true %}
+{% include array.html v="1,2,4,6" name="nums" ptr="i=1" vars="suffix=24" label="i = 1" note="res[1] = 1 × 24 = 24, then suffix ×= 2" %}
+{% include array.html v="1,24,12,8" name="res" hl="1" done="2,3" ptr="i=1" join=true %}
+{% include array.html v="1,2,4,6" name="nums" ptr="i=0" vars="suffix=48" label="i = 0" note="res[0] = 1 × 48 = 48 → done" %}
+{% include array.html v="48,24,12,8" name="res" hl="0" done="1,2,3" ptr="i=0" join=true %}
 </div>
 
 ```cpp

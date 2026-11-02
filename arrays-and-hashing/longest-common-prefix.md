@@ -28,11 +28,15 @@ Output: "da"
 ## Dry run
 
 <div class="viz">
-<p class="viz-legend"><span class="done">■ matches lcp</span> · <span class="hl">■ mismatch</span></p>
-{% include array.html v="b,a,t" label="start" note="lcp = strs[0] = &quot;bat&quot;" %}
-{% include array.html v="b,a,g" done="0,1" hl="2" label="&quot;bag&quot;" note="g ≠ t at index 2 → lcp = &quot;ba&quot;" %}
-{% include array.html v="b,a,n,k" done="0,1" label="&quot;bank&quot;" note="lcp runs out at 2 → lcp = &quot;ba&quot;" %}
-{% include array.html v="b,a,n,d" done="0,1" label="&quot;band&quot;" note="lcp runs out at 2 → lcp = &quot;ba&quot;" %}
+<p class="viz-legend"><span class="hl">■ mismatch</span> · <span class="done">■ matches lcp</span></p>
+{% include array.html v="b,a,t" name="lcp" label="start" note="lcp = strs[0] = &quot;bat&quot;" %}
+{% include array.html v="b,a,t" name="lcp" done="0,1" hl="2" ptr="i=2" label="strs[1]" note="lcpf: 'g' ≠ 't' at i = 2 → lcp = &quot;ba&quot;" %}
+{% include array.html v="b,a,g" name="strs[1]" done="0,1" hl="2" ptr="i=2" join=true %}
+{% include array.html v="b,a" name="lcp" done="0,1" label="strs[2]" note="lcp runs out at i = 2 → still &quot;ba&quot;" %}
+{% include array.html v="b,a,n,k" name="strs[2]" done="0,1" ptr="i=2" join=true %}
+{% include array.html v="b,a" name="lcp" done="0,1" label="strs[3]" note="lcp runs out at i = 2 → still &quot;ba&quot;" %}
+{% include array.html v="b,a,n,d" name="strs[3]" done="0,1" ptr="i=2" join=true %}
+{% include array.html v="b,a" name="lcp" done="0,1" label="end" note="return &quot;ba&quot;" %}
 </div>
 
 ## Code
@@ -63,6 +67,22 @@ class Solution {
 ## Best: vertical scan, O(S) time, O(1) extra space
 
 Compare column by column: check character `i` of every string against `strs[0][i]`, and stop at the first string that's too short or differs. Nothing is copied until the single `substr` at the end, and it reads no character past the first mismatch. `S` is the total number of characters.
+
+<div class="viz">
+<p class="viz-legend"><span class="hl">■ compared</span> · <span class="done">■ common prefix</span></p>
+{% include array.html v="b,a,t" name="strs[0]" hl="0" done="" ptr="i=0" label="i = 0" note="every s[0] == 'b' ✓" %}
+{% include array.html v="b,a,g" name="strs[1]" hl="0" done="" ptr="i=0" join=true %}
+{% include array.html v="b,a,n,k" name="strs[2]" hl="0" done="" ptr="i=0" join=true %}
+{% include array.html v="b,a,n,d" name="strs[3]" hl="0" done="" ptr="i=0" join=true %}
+{% include array.html v="b,a,t" name="strs[0]" hl="1" done="0" ptr="i=1" label="i = 1" note="every s[1] == 'a' ✓" %}
+{% include array.html v="b,a,g" name="strs[1]" hl="1" done="0" ptr="i=1" join=true %}
+{% include array.html v="b,a,n,k" name="strs[2]" hl="1" done="0" ptr="i=1" join=true %}
+{% include array.html v="b,a,n,d" name="strs[3]" hl="1" done="0" ptr="i=1" join=true %}
+{% include array.html v="b,a,t" name="strs[0]" hl="2" done="0,1" ptr="i=2" label="i = 2" note="strs[1][2] = 'g' ≠ 't' → return substr(0, 2) = &quot;ba&quot;" %}
+{% include array.html v="b,a,g" name="strs[1]" hl="2" done="0,1" ptr="i=2" join=true %}
+{% include array.html v="b,a,n,k" name="strs[2]" hl="" done="0,1" ptr="i=2" join=true %}
+{% include array.html v="b,a,n,d" name="strs[3]" hl="" done="0,1" ptr="i=2" join=true %}
+</div>
 
 ```cpp
 class Solution {

@@ -29,15 +29,15 @@ Output: [3]
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ current i</span> · <span class="done">■ processed</span></p>
-{% include array.html v="1,2,3,1,2,1,2,4" hl="0" label="i = 0" note="map {1:1}" %}
-{% include array.html v="1,2,3,1,2,1,2,4" hl="1" done="0" label="i = 1" note="map {1:1, 2:1}" %}
-{% include array.html v="1,2,3,1,2,1,2,4" hl="2" done="0,1" label="i = 2" note="{1:1, 2:1, 3:1} → 3 keys, −1 each → all 0 → map {}" %}
-{% include array.html v="1,2,3,1,2,1,2,4" hl="3" done="0,1,2" label="i = 3" note="map {1:1}" %}
-{% include array.html v="1,2,3,1,2,1,2,4" hl="4" done="0,1,2,3" label="i = 4" note="map {1:1, 2:1}" %}
-{% include array.html v="1,2,3,1,2,1,2,4" hl="5" done="0,1,2,3,4" label="i = 5" note="map {1:2, 2:1}" %}
-{% include array.html v="1,2,3,1,2,1,2,4" hl="6" done="0,1,2,3,4,5" label="i = 6" note="map {1:2, 2:2}" %}
-{% include array.html v="1,2,3,1,2,1,2,4" hl="7" done="0,1,2,3,4,5,6" label="i = 7" note="{1:2, 2:2, 4:1} → −1 each → 4 hits 0 → map {1:1, 2:1}" %}
-{% include array.html v="1,2,3,1,2,1,2,4" hl="0,1,3,4,5,6" label="verify" note="1 ×3 > 2 ✓ · 2 ×3 > 2 ✓ → [1, 2]" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="0" done="" ptr="i=0" vars="mp[1]=1" label="i = 0" note="add 1" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="1" done="0" ptr="i=1" vars="mp[1]=1,mp[2]=1" label="i = 1" note="add 2" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="2" done="0,1" ptr="i=2" label="i = 2" note="3 keys → −1 each → all hit 0 → map is empty" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="3" done="0,1,2" ptr="i=3" vars="mp[1]=1" label="i = 3" note="add 1" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="4" done="0,1,2,3" ptr="i=4" vars="mp[1]=1,mp[2]=1" label="i = 4" note="add 2" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="5" done="0,1,2,3,4" ptr="i=5" vars="mp[1]=2,mp[2]=1" label="i = 5" note="1 again" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="6" done="0,1,2,3,4,5" ptr="i=6" vars="mp[1]=2,mp[2]=2" label="i = 6" note="2 again" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="7" done="0,1,2,3,4,5,6" ptr="i=7" vars="mp[1]=1,mp[2]=1" label="i = 7" note="3 keys → −1 each → 4 hits 0 and is erased" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="0,1,3,4,5,6" label="verify" note="1 appears 3 times > 8 / 3 ✓ · 2 appears 3 times ✓ → [1, 2]" %}
 </div>
 
 ## Code
@@ -82,6 +82,20 @@ class Solution {
 ## Best: Boyer–Moore with two candidates, O(n) time, O(1) space
 
 Same idea as yours, without the map. At most two values can appear more than `n/3` times, so keep two candidate slots with a vote count each. A match adds a vote, an empty slot gets taken, and anything else knocks one vote off both. Then count the two survivors to confirm them.
+
+<div class="viz">
+<p class="viz-legend"><span class="hl">■ current x</span> · <span class="done">■ processed</span></p>
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" vars="c1=0,n1=0,c2=1,n2=0" label="start" note="two placeholder candidates with no votes" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="0" done="" ptr="x=0" vars="c1=0,n1=0,c2=1,n2=1" label="x = 1" note="x == c2 → n2++" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="1" done="0" ptr="x=1" vars="c1=2,n1=1,c2=1,n2=1" label="x = 2" note="no match, n1 == 0 → c1 = 2" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="2" done="0,1" ptr="x=2" vars="c1=2,n1=0,c2=1,n2=0" label="x = 3" note="no match, both slots full → n1--, n2--" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="3" done="0,1,2" ptr="x=3" vars="c1=2,n1=0,c2=1,n2=1" label="x = 1" note="x == c2 → n2++" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="4" done="0,1,2,3" ptr="x=4" vars="c1=2,n1=1,c2=1,n2=1" label="x = 2" note="x == c1 → n1++" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="5" done="0,1,2,3,4" ptr="x=5" vars="c1=2,n1=1,c2=1,n2=2" label="x = 1" note="x == c2 → n2++" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="6" done="0,1,2,3,4,5" ptr="x=6" vars="c1=2,n1=2,c2=1,n2=2" label="x = 2" note="x == c1 → n1++" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="7" done="0,1,2,3,4,5,6" ptr="x=7" vars="c1=2,n1=1,c2=1,n2=1" label="x = 4" note="no match → n1--, n2--" %}
+{% include array.html v="1,2,3,1,2,1,2,4" name="nums" hl="0,1,3,4,5,6" vars="c1=2,c2=1" label="verify" note="count(2) = 3 > 2 ✓ · count(1) = 3 > 2 ✓ → [2, 1]" %}
+</div>
 
 ```cpp
 class Solution {

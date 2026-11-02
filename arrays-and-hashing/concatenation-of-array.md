@@ -29,13 +29,17 @@ Output: [22, 21, 20, 1, 22, 21, 20, 1]
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ written this step</span> · <span class="done">■ already filled</span></p>
-{% include array.html v="1,4,1,2" label="nums" note="n = 4" %}
-{% include array.html v="0,0,0,0,0,0,0,0" label="start" note="ans = vector(8, 0)" %}
-{% include array.html v="1,0,0,0,1,0,0,0" hl="0,4" label="i = 0" note="ans[0] = ans[4] = 1" %}
-{% include array.html v="1,4,0,0,1,4,0,0" hl="1,5" done="0,4" label="i = 1" note="ans[1] = ans[5] = 4" %}
-{% include array.html v="1,4,1,0,1,4,1,0" hl="2,6" done="0,1,4,5" label="i = 2" note="ans[2] = ans[6] = 1" %}
-{% include array.html v="1,4,1,2,1,4,1,2" hl="3,7" done="0,1,2,4,5,6" label="i = 3" note="ans[3] = ans[7] = 2" %}
-{% include array.html v="1,4,1,2,1,4,1,2" done="0,1,2,3,4,5,6,7" label="end" note="nums twice" %}
+{% include array.html v="1,4,1,2" name="nums" label="start" note="ans = vector(2n, 0)" vars="n=4" %}
+{% include array.html v="0,0,0,0,0,0,0,0" name="ans" join=true %}
+{% include array.html v="1,4,1,2" name="nums" hl="0" ptr="i=0" label="i = 0" note="ans[i] = ans[i + n] = nums[i] = 1" vars="n=4" %}
+{% include array.html v="1,0,0,0,1,0,0,0" name="ans" hl="0,4" ptr="i=0,i+n=4" join=true %}
+{% include array.html v="1,4,1,2" name="nums" hl="1" ptr="i=1" label="i = 1" note="ans[1] = ans[5] = 4" vars="n=4" %}
+{% include array.html v="1,4,0,0,1,4,0,0" name="ans" hl="1,5" done="0,4" ptr="i=1,i+n=5" join=true %}
+{% include array.html v="1,4,1,2" name="nums" hl="2" ptr="i=2" label="i = 2" note="ans[2] = ans[6] = 1" vars="n=4" %}
+{% include array.html v="1,4,1,0,1,4,1,0" name="ans" hl="2,6" done="0,1,4,5" ptr="i=2,i+n=6" join=true %}
+{% include array.html v="1,4,1,2" name="nums" hl="3" ptr="i=3" label="i = 3" note="ans[3] = ans[7] = 2" vars="n=4" %}
+{% include array.html v="1,4,1,2,1,4,1,2" name="ans" hl="3,7" done="0,1,2,4,5,6" ptr="i=3,i+n=7" join=true %}
+{% include array.html v="1,4,1,2,1,4,1,2" name="ans" done="0,1,2,3,4,5,6,7" label="end" note="nums twice" %}
 </div>
 
 ## Code

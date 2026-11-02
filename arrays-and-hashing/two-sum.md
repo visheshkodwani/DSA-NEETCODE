@@ -29,10 +29,10 @@ Output: [0, 2]
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ current i / answer</span> · <span class="done">■ in the map</span></p>
-{% include array.html v="4,5,6" label="start" note="target = 10, mp = {}" %}
-{% include array.html v="4,5,6" hl="0" label="i = 0" note="need 6 → not in mp, store mp = {4:0}" %}
-{% include array.html v="4,5,6" hl="1" done="0" label="i = 1" note="need 5 → not in mp, store mp = {4:0, 5:1}" %}
-{% include array.html v="4,5,6" hl="0,2" done="1" label="i = 2" note="need 4 → found at 0, return [0, 2]" %}
+{% include array.html v="4,5,6" name="nums" vars="target=10" label="start" note="mp is empty" %}
+{% include array.html v="4,5,6" name="nums" hl="0" ptr="i=0" vars="need=6,mp[4]=0" label="i = 0" note="6 not in mp → store mp[4] = 0" %}
+{% include array.html v="4,5,6" name="nums" hl="1" done="0" ptr="i=1" vars="need=5,mp[4]=0,mp[5]=1" label="i = 1" note="5 not in mp → store mp[5] = 1" %}
+{% include array.html v="4,5,6" name="nums" hl="0,2" done="1" ptr="i=2" vars="need=4" label="i = 2" note="mp[4] = 0 found → return [0, 2]" %}
 </div>
 
 ## Code

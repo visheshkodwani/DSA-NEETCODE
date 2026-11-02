@@ -28,10 +28,13 @@ Output: [7]
 ## Dry run
 
 <div class="viz">
-<p class="viz-legend"><span class="done">■ taken</span></p>
-{% include array.html v="1,2,2,3,3,3" label="nums" note="mp = {1:1, 2:2, 3:3}" %}
-{% include array.html v="3,2,1" label="sorted" note="numbers by freq desc: (3,3) (2,2) (1,1)" %}
-{% include array.html v="3,2,1" done="0,1" label="take k = 2" note="res = [3, 2]" %}
+<p class="viz-legend"><span class="hl">■ current</span> · <span class="done">■ taken</span></p>
+{% include array.html v="1,2,2,3,3,3" name="nums" vars="mp[1]=1,mp[2]=2,mp[3]=3" label="count" note="frequency map" %}
+{% include array.html v="3,2,1" name="ans (by freq)" vars="k=2" label="sort" note="pairs (freq, num) sorted by freq desc: (3,3) (2,2) (1,1)" %}
+{% include array.html v="3,2,1" name="ans (by freq)" hl="0" ptr="i=0" vars="k=2" label="i = 0" note="res.push_back(3)" %}
+{% include array.html v="3" name="res" join=true %}
+{% include array.html v="3,2,1" name="ans (by freq)" hl="1" done="0" ptr="i=1" vars="k=2" label="i = 1" note="res.push_back(2) → k taken, return [3, 2]" %}
+{% include array.html v="3,2" name="res" done="0,1" join=true %}
 </div>
 
 ## Code
@@ -86,9 +89,11 @@ A frequency can only be `1..n`. So make `n + 1` buckets where `bucket[f]` holds 
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ collecting</span> · <span class="done">■ taken</span> · index = frequency</p>
-{% include array.html v="-,1,2,3,-,-,-" label="bucket" note="bucket[f] = numbers that appear f times" %}
-{% include array.html v="-,1,2,3,-,-,-" hl="3" label="f = 3" note="f = 6, 5, 4 are empty → take 3, res = [3]" %}
-{% include array.html v="-,1,2,3,-,-,-" hl="2" done="3" label="f = 2" note="take 2, res = [3, 2] → size k, return" %}
+{% include array.html v="-,1,2,3,-,-,-" name="bucket" vars="k=2" label="buckets" note="bucket[f] = numbers that appear f times" %}
+{% include array.html v="-,1,2,3,-,-,-" name="bucket" hl="3" ptr="f=3" vars="k=2" label="f = 3" note="f = 6, 5, 4 are empty → take 3" %}
+{% include array.html v="3" name="res" join=true %}
+{% include array.html v="-,1,2,3,-,-,-" name="bucket" hl="2" done="3" ptr="f=2" vars="k=2" label="f = 2" note="take 2 → res has k numbers, return" %}
+{% include array.html v="3,2" name="res" done="0,1" join=true %}
 </div>
 
 ```cpp

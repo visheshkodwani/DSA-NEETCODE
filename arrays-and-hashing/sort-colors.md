@@ -29,13 +29,13 @@ Output: [0, 1, 2]
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ looked at / swapped</span> · <span class="done">■ settled (outside [mid, end])</span></p>
-{% include array.html v="2,0,2,1,1,0" label="start" note="start = 0, mid = 0, end = 5" %}
-{% include array.html v="0,0,2,1,1,2" hl="0,5" label="mid = 0" note="2 → swap(0, 5), end = 4 · mid stays" %}
-{% include array.html v="0,0,2,1,1,2" hl="0" done="5" label="mid = 0" note="0 → swap(0, 0), start = 1, mid = 1" %}
-{% include array.html v="0,0,2,1,1,2" hl="1" done="0,5" label="mid = 1" note="0 → swap(1, 1), start = 2, mid = 2" %}
-{% include array.html v="0,0,1,1,2,2" hl="2,4" done="0,1,5" label="mid = 2" note="2 → swap(2, 4), end = 3 · mid stays" %}
-{% include array.html v="0,0,1,1,2,2" hl="2" done="0,1,4,5" label="mid = 2" note="1 → mid = 3" %}
-{% include array.html v="0,0,1,1,2,2" hl="3" done="0,1,2,4,5" label="mid = 3" note="1 → mid = 4 > end → stop" %}
+{% include array.html v="2,0,2,1,1,0" name="nums" hl="" done="" ptr="start=0,mid=0,end=5" label="start" note="[mid, end] is the unchecked region" %}
+{% include array.html v="0,0,2,1,1,2" name="nums" hl="0,5" done="" ptr="start=0,mid=0,end=5" label="nums[mid] = 2" note="swap(nums[mid], nums[end]), end-- · mid stays" %}
+{% include array.html v="0,0,2,1,1,2" name="nums" hl="0" done="5" ptr="start=0,mid=0,end=4" label="nums[mid] = 0" note="swap(nums[start], nums[mid]), start++, mid++" %}
+{% include array.html v="0,0,2,1,1,2" name="nums" hl="1" done="0,5" ptr="start=1,mid=1,end=4" label="nums[mid] = 0" note="swap in place, start++, mid++" %}
+{% include array.html v="0,0,1,1,2,2" name="nums" hl="2,4" done="0,1,5" ptr="start=2,mid=2,end=4" label="nums[mid] = 2" note="swap(nums[2], nums[4]), end-- · mid stays" %}
+{% include array.html v="0,0,1,1,2,2" name="nums" hl="2" done="0,1,4,5" ptr="start=2,mid=2,end=3" label="nums[mid] = 1" note="mid++" %}
+{% include array.html v="0,0,1,1,2,2" name="nums" hl="3" done="0,1,2,4,5" ptr="start=2,mid=3,end=3" label="nums[mid] = 1" note="mid++ → mid = 4 > end → stop" %}
 </div>
 
 ## Code
@@ -77,10 +77,10 @@ It depends on **where the swapped-in value came from**.
 
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ swapped</span> · <span class="done">■ settled</span></p>
-{% include array.html v="1,2,0" label="mid = 0" note="1 → mid = 1" %}
-{% include array.html v="1,0,2" hl="1,2" label="mid = 1" note="2 → swap(1, 2), end = 1 · nums[1] is now 0 (unchecked)" %}
-{% include array.html v="1,0,2" done="2" label="✗ mid++" note="mid = 2 > end → stops with [1, 0, 2], wrong" %}
-{% include array.html v="0,1,2" hl="0,1" done="2" label="✓ mid stays" note="mid = 1: 0 → swap(0, 1) → [0, 1, 2]" %}
+{% include array.html v="1,2,0" name="nums" ptr="start=0,mid=0,end=2" label="nums[mid] = 1" note="mid++" %}
+{% include array.html v="1,0,2" name="nums" hl="1,2" ptr="start=0,mid=1,end=2" label="nums[mid] = 2" note="swap(nums[1], nums[2]), end = 1 · nums[1] is now 0, still unchecked" %}
+{% include array.html v="1,0,2" name="nums" done="2" ptr="start=0,end=1,mid=2" label="✗ mid++" note="mid = 2 > end → stops with [1, 0, 2], wrong" %}
+{% include array.html v="0,1,2" name="nums" hl="0,1" done="2" ptr="start=0,mid=1,end=1" label="✓ mid stays" note="nums[mid] = 0 → swap(nums[0], nums[1]) → [0, 1, 2]" %}
 </div>
 
 ## Best: already optimal

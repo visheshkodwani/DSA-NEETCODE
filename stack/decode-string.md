@@ -28,32 +28,73 @@ Output: "abcabccdcdcdef"
 ```
 
 {: .intuition }
-> **A `[` starts a new, smaller problem, and a `]` finishes it and hands the result back to the outer level.** Keep `curr`, the string built so far at this level, and `num`, the repeat count you're reading. On `[`, save the outer level on a stack (its `curr` and the count for the inner part), then start fresh. On `]`, pop the count and the outer `curr`, and set `curr = outer + inner × count`. Letters just go onto `curr`, and digits build `num` one digit at a time, so counts like `10` work.
+> **Push every character until you hit a `]`. That `]` closes the innermost bracket, and everything you need to decode it sits on top of the stack.** Pop letters until the `[` to get the text, pop the `[`, then pop digits to get the count. Both come off backwards, so reverse them. Repeat the text `count` times and push the result back onto the stack, because it may be the text of an outer bracket. When the input ends, the stack holds the fully decoded string, bottom to top.
 
 ## Dry run
 
-`''` is the empty string.
-
 <div class="viz">
 <p class="viz-legend"><span class="hl">■ s[i]</span> · <span class="done">■ stack (bottom → top)</span></p>
-{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="0" vars="curr='',num=3" label="'3'" note="a digit, so num = 3" %}
-{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="1" vars="curr='',num=0" label="'['" note="push curr '' and num 3, then reset both" %}
-{% include array.html v="'',3" name="st" done="0,1" join=true %}
-{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="2" vars="curr=a,num=0" label="'a'" note="a letter, so add it to curr" %}
-{% include array.html v="'',3" name="st" done="0,1" join=true %}
-{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="3" vars="curr=a,num=2" label="'2'" note="a digit, so num = 2" %}
-{% include array.html v="'',3" name="st" done="0,1" join=true %}
-{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="4" vars="curr='',num=0" label="'['" note="push curr 'a' and num 2, then reset both" %}
-{% include array.html v="'',3,a,2" name="st" done="0,1,2,3" join=true %}
-{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="5" vars="curr=c,num=0" label="'c'" note="a letter, so add it to curr" %}
-{% include array.html v="'',3,a,2" name="st" done="0,1,2,3" join=true %}
-{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="6" vars="curr=acc,num=0" label="']'" note="pop count 2 and prev 'a'. curr = 'a' + 'cc' = 'acc'" %}
-{% include array.html v="'',3" name="st" done="0,1" join=true %}
-{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="7" vars="curr=accaccacc,num=0" label="']'" note="pop count 3 and prev ''. curr = '' + 'acc' × 3. Return 'accaccacc'" %}
-{% include array.html v="" name="st" join=true %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="0,1,2,3,4,5" label="i = 0..5" note="no ], so push each character" %}
+{% include array.html v="3,[,a,2,[,c" name="st" done="0,1,2,3,4,5" join=true %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="6" vars="temp=c,num=2" label="']'" note="pop c until the [, pop [, pop the digit 2. 'c' × 2 = 'cc', push it back" %}
+{% include array.html v="3,[,a,c,c" name="st" done="0,1,2,3,4" join=true %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="7" vars="temp=acc,num=3" label="']'" note="pop c, c, a and reverse → 'acc'. Pop [, pop 3. 'acc' × 3, push it back" %}
+{% include array.html v="a,c,c,a,c,c,a,c,c" name="st" done="0,1,2,3,4,5,6,7,8" join=true %}
+{% include array.html v="a,c,c,a,c,c,a,c,c" name="st" done="0,1,2,3,4,5,6,7,8" label="end" note="pop everything and reverse → 'accaccacc'" %}
 </div>
 
 ## Code
+
+```cpp
+class Solution {
+   public:
+    string decodeString(string s) {
+        stack<char> st;
+        string ans = "";
+        for (int i = 0; i < s.length(); i++) {
+            if (s[i] == ']') {
+                string temp;
+                while (st.size() > 0 && st.top() != '[') {
+                    temp.push_back(st.top());
+                    st.pop();
+                }
+                reverse(temp.begin(), temp.end());
+                st.pop();
+                string tempnum;
+                while (st.size() > 0 && isdigit(st.top())) {
+                    tempnum.push_back(st.top());
+                    st.pop();
+                }
+                int tempnumber;
+                reverse(tempnum.begin(), tempnum.end());
+                if (tempnum.empty() == true)
+                    tempnumber = 1;
+                else
+                    tempnumber = stoi(tempnum);
+                while (tempnumber) {
+                    ans = ans + temp;
+                    tempnumber--;
+                }
+                for (int j = 0; j < ans.length(); j++) {
+                    st.push(ans[j]);
+                }
+                ans = "";
+            } else
+                st.push(s[i]);
+        }
+        while (st.size() > 0) {
+            ans.push_back(st.top());
+            st.pop();
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+```
+
+## Best: stack of strings, O(L·d) time, O(L) space
+
+The Big-O is the same (`L` = decoded length, `d` = nesting depth), but it does less work. The char stack pops every decoded character and pushes it back one at a time at each level, and it reverses `temp` and the count. This version never puts decoded text back on a stack. It keeps `curr`, the string built so far at this level, and `num`, the count being read. On `[` it saves both and starts fresh. On `]` it pops them and sets `curr = prev + curr × count`. Nothing comes off backwards, so nothing needs reversing.
 
 ```cpp
 class Solution {
@@ -103,12 +144,29 @@ public:
 };
 ```
 
-## Best: already optimal
+`''` is the empty string.
 
-Every character of the output has to be written, and this stack approach does that in one pass over `s`. The only extra cost is that a nested part gets copied once for each level it's merged into (`L` = decoded length, `d` = nesting depth), and the recursive solution pays the same. Keeping the counts in a separate `stack<int>` would skip the `to_string`/`stoi`, but the complexity doesn't change.
+<div class="viz">
+<p class="viz-legend"><span class="hl">■ s[i]</span> · <span class="done">■ stack (bottom → top)</span></p>
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="0" vars="curr='',num=3" label="'3'" note="a digit, so num = 3" %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="1" vars="curr='',num=0" label="'['" note="push curr '' and num 3, then reset both" %}
+{% include array.html v="'',3" name="st" done="0,1" join=true %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="2" vars="curr=a,num=0" label="'a'" note="a letter, so add it to curr" %}
+{% include array.html v="'',3" name="st" done="0,1" join=true %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="3" vars="curr=a,num=2" label="'2'" note="a digit, so num = 2" %}
+{% include array.html v="'',3" name="st" done="0,1" join=true %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="4" vars="curr='',num=0" label="'['" note="push curr 'a' and num 2, then reset both" %}
+{% include array.html v="'',3,a,2" name="st" done="0,1,2,3" join=true %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="5" vars="curr=c,num=0" label="'c'" note="a letter, so add it to curr" %}
+{% include array.html v="'',3,a,2" name="st" done="0,1,2,3" join=true %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="6" vars="curr=acc,num=0" label="']'" note="pop count 2 and prev 'a'. curr = 'a' + 'cc' = 'acc'" %}
+{% include array.html v="'',3" name="st" done="0,1" join=true %}
+{% include array.html v="3,[,a,2,[,c,],]" name="s" hl="7" vars="curr=accaccacc,num=0" label="']'" note="pop count 3 and prev ''. curr = '' + 'acc' × 3. Return 'accaccacc'" %}
+{% include array.html v="" name="st" join=true %}
+</div>
 
 {: .pitfall }
-> Reset `num` to `0` after you push it on `[`. If you don't, the next count gets added onto the old digits (`3[a2[c]]` would read the inner count as `32`). Also build `num` with `num * 10 + digit`, not `num = digit`, or `10[a]` becomes `0[a]`.
+> Everything comes off a stack in reverse. The text between `[` and `]` and the digits of the count both need a `reverse`. Without it, `ab` decodes as `ba` and `12[a]` repeats 21 times. The final string needs one too, because popping the whole stack reads it top to bottom.
 
 {: .revisit }
 > This is the "save the outer context on push, restore it on pop" pattern for nested brackets. Basic Calculator and Number of Atoms use the same loop. You can also write it as recursion: call the function on `[` and return on `]`, so the call stack plays the role of `st`.
